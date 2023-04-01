@@ -58,17 +58,19 @@ const taskManager = {
     if (isValid) this.list[task] = status;
   },
 
-  addTask(task) {
+  addTask(task, status = "To do") {
     const isValid =
       this.validation.isValidString(task) &&
-      this.validation.isTaskExist(this.list, task, false);
-    if (isValid) taskManager.list[task] = "To do";
+      this.validation.isValidString(status) &&
+      this.validation.isTaskExist(this.list, task, false) &&
+      this.validation.isStatusAvailable(this.availableStatuses, status);
+
+    if (isValid) taskManager.list[task] = status;
   },
 
   deleteTask(task) {
-    const isValid =
-      this.validation.isValidString(task) &&
-      this.validation.isTaskExist(this.list, task);
+    const isValid = this.validation.isTaskExist(this.list, task);
+
     if (isValid) delete this.list[task];
   },
 
@@ -76,10 +78,10 @@ const taskManager = {
     const isValid =
       this.validation.isValidString(status) &&
       this.validation.isStatusAvailable(this.availableStatuses, status);
-    if (!isValid) return;
+    
+      if (!isValid) return;
 
     console.log(`${status}:`);
-
     let isEmpty = true;
     for (let task in this.list) {
       if (this.list[task] === status) {
@@ -91,16 +93,16 @@ const taskManager = {
   },
 
   showList() {
-    this.showStatus("To do");
-    this.showStatus("In Progress");
-    this.showStatus("Done");
+    for (const status in this.availableStatuses) {
+      this.showStatus(status)
+    }
   },
 };
 
-taskManager.addTask("Listen to Techno")
-taskManager.addTask("Listen to House")
-taskManager.changeStatus("Listen to Techno", "In Progress")
-taskManager.deleteTask("Listen to House")
-taskManager.addTask("Drink a cup of coffee")
-taskManager.changeStatus("Drink a cup of coffee", "Done")
-taskManager.deleteTask("Drink a cup of coffee")
+taskManager.addTask("Listen to Techno");
+taskManager.addTask("Listen to House");
+taskManager.changeStatus("Listen to Techno", "In Progress");
+taskManager.deleteTask("Listen to House");
+taskManager.addTask("Drink a cup of coffee");
+taskManager.changeStatus("Drink a cup of coffee", "Done");
+taskManager.deleteTask("Drink a cup of coffee");
